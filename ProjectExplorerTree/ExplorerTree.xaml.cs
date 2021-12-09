@@ -69,36 +69,13 @@ namespace ProjectExplorerTree
             AddNewItemViaContextMenu<SimpleFileTreeNode>(sender, "New File");
         }
         
-        // Not used anymore. Recursive version of item deletion
-        // private void DeleteItem(IEnumerable<TreeNodeBase?> tree, TreeNodeBase itemToDelete)
-        // {
-        //     foreach (var treeNode in tree)
-        //     {
-        //         bool isAnyNodeSelected = treeNode.Children.Any(treeNodeBase => treeNodeBase.IsSelected);
-        //
-        //         if (isAnyNodeSelected)
-        //         {
-        //             treeNode.DeleteItem(itemToDelete);
-        //             break;
-        //         }
-        //
-        //         if (treeNode.Children.Any())
-        //         {
-        //             DeleteItem(treeNode.Children, itemToDelete);
-        //         }
-        //     }
-        // }
-
         private void DeleteCurrentItemViaContextMenu(object sender, RoutedEventArgs e)
         {
             var treeNodeToDelete = (TreeNodeBase)((MenuItem)sender).DataContext;
 
             var parent = treeNodeToDelete.GetParent();
             parent?.DeleteItem(treeNodeToDelete);
-
-            // unused
-            // var treeItemSource = (ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource;
-            // DeleteItem(treeItemSource, treeNodeToDelete);
+            
         }
 
         private void TreeViewItemPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
