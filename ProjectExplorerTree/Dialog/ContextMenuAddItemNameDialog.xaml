@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:hc="https://handyorg.github.io/handycontrol"
+        xmlns:dialog="clr-namespace:ProjectExplorerTree.Dialog"
         mc:Ignorable="d"
         Height="150"
         Width="300"
@@ -12,17 +13,21 @@
         Background="#f2f2f2"
         WindowStyle="None"
         BorderThickness="1"
-        WindowStartupLocation="CenterScreen"
-        >
+        WindowStartupLocation="CenterScreen">
     <Grid HorizontalAlignment="Center">
         <TextBox Style="{StaticResource TextBoxExtend}"
-                 Text="{Binding FileName}"
-                 hc:InfoElement.Title="Please provide a valid file name" 
+                 dialog:FocusExtension.IsFocused="True"
+                 Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
+                 hc:InfoElement.Title="Please provide a valid file name"
                  Width="250"
                  VerticalAlignment="Center"
                  HorizontalAlignment="Center">
             <TextBox.InputBindings>
-                <KeyBinding Key="Enter"/>
+                <KeyBinding Gesture="Enter"
+                            Command="{Binding UpdateTextBoxBindingOnEnterCommand}"
+                            CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type TextBox}}}" />
+                <KeyBinding Gesture="Escape"
+                            Command="{Binding EscapeOnTextBoxCommand}"/>
             </TextBox.InputBindings>
         </TextBox>
     </Grid>

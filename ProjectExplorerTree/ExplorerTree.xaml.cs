@@ -31,9 +31,10 @@ namespace ProjectExplorerTree
             set => SetValue(ItemsSourceProperty, value);
         }
 
-        private void AddNewItemViaContextMenu<T>(object sender, string name) where T : TreeNodeBase
+        private void AddNewItemViaContextMenu<T>(object sender) where T : TreeNodeBase
         {
-            name = RetrieveFileNameFromDialog();
+            string name = RetrieveFileNameFromDialog();
+            if (name == string.Empty) return;
             
             var treeNode = (TreeNodeBase)((MenuItem)sender).DataContext;
             var parent = treeNode.GetParent();
@@ -87,12 +88,12 @@ namespace ProjectExplorerTree
 
         private void AddNewFolderViaContextMenu(object sender, RoutedEventArgs e)
         {
-            AddNewItemViaContextMenu<FolderTreeNode>(sender, "New Folder");
+            AddNewItemViaContextMenu<FolderTreeNode>(sender);
         }
         
         private void AddNewFileViaContextMenu(object sender, RoutedEventArgs e)
         {
-            AddNewItemViaContextMenu<SimpleFileTreeNode>(sender, "New File");
+            AddNewItemViaContextMenu<SimpleFileTreeNode>(sender);
         }
         
         private void DeleteCurrentItemViaContextMenu(object sender, RoutedEventArgs e)

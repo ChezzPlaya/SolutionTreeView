@@ -1,9 +1,15 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using HandyControl.Tools.Command;
 
 namespace ProjectExplorerTree.Dialog;
 
-public sealed class ViewModel : INotifyPropertyChanged
+public sealed class ViewModel : INotifyPropertyChanged, ICloseWindow
 {
     private string _fileName = string.Empty;
 
@@ -14,10 +20,39 @@ public sealed class ViewModel : INotifyPropertyChanged
         {
             _fileName = value;
             OnPropertyChanged();
+            CloseDialog();
         }
     }
 
-    public bool Success { get; set; }
+    public ICommand UpdateTextBoxBindingOnEnterCommand { get; }
+    public ICommand EscapeOnTextBoxCommand { get; }
+
+    public ViewModel()
+    {
+        UpdateTextBoxBindingOnEnterCommand = new RelayCommand(ExecuteUpdateTextBoxBindingOnEnterCommand);
+        EscapeOnTextBoxCommand = new RelayCommand(EscapeOnTextBox);
+    }
+
+    private void EscapeOnTextBox(object obj)
+    {
+        CloseDialog();
+    }
+
+    private void ExecuteUpdateTextBoxBindingOnEnterCommand(object parameter)
+    {
+        if (parameter is TextBox tBox)
+        {
+            DependencyProperty prop = TextBox.TextProperty;
+            BindingExpression? binding = BindingOperations.GetBindingExpression(tBox, prop);
+            if (binding != null) 
+                binding.UpdateSource();
+        }
+    }
+
+    void CloseDialog()
+    {
+        Close?.Invoke();
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -25,4 +60,6 @@ public sealed class ViewModel : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    public Action? Close { get; set; }
 }
