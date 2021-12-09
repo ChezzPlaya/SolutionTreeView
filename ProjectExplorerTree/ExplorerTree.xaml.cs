@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ProjectExplorerTree.Dialog;
 using ProjectExplorerTree.TreeNodeTypes;
 
 namespace ProjectExplorerTree
@@ -32,6 +33,8 @@ namespace ProjectExplorerTree
 
         private void AddNewItemViaContextMenu<T>(object sender, string name) where T : TreeNodeBase
         {
+            name = RetrieveFileNameFromDialog();
+            
             var treeNode = (TreeNodeBase)((MenuItem)sender).DataContext;
             var parent = treeNode.GetParent();
             
@@ -57,7 +60,21 @@ namespace ProjectExplorerTree
                 }
             }
         }
-        
+
+        private string RetrieveFileNameFromDialog()
+        {
+            ViewModel dialogVm = new ViewModel();
+            var dialogContent = new ContextMenuAddItemNameDialog
+            {
+                DataContext = dialogVm
+            };
+
+            dialogContent.ShowDialog();
+
+            return dialogVm.FileName;
+
+        }
+
         private TreeNodeBase FindRootParent()
         {
             return ((ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource).First(x => x.IsSelected);
