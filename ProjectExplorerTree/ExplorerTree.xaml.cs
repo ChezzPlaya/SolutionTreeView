@@ -38,9 +38,8 @@ namespace ProjectExplorerTree
             // parent is null -> then we've reached the treenode root
             if (parent is null)
             {
-                // Todo: Fix this for more then one root node
-                parent = ((ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource).First();
-                var newItem = (TreeNodeBase)Activator.CreateInstance(typeof(T), name, parent)!;
+                parent = FindRootParent();
+                var newItem = CreateTreeNodeInstance<T>(name, parent);
                 parent.AddNewItem(newItem);
             }
             else
@@ -48,15 +47,25 @@ namespace ProjectExplorerTree
                 // Check for the file tree node type --> Add item to the parent
                 if (treeNode.GetType().IsSubclassOf(typeof(FileTreeNode)))
                 {
-                    var newItem = (TreeNodeBase)Activator.CreateInstance(typeof(T), name, parent)!;
+                    var newItem = CreateTreeNodeInstance<T>(name, parent);
                     parent.AddNewItem(newItem);
                 }
                 else
                 {
-                    var newItem = (TreeNodeBase)Activator.CreateInstance(typeof(T), name, treeNode)!;
+                    var newItem = CreateTreeNodeInstance<T>(name, treeNode);
                     treeNode.AddNewItem(newItem);
                 }
             }
+        }
+        
+        private TreeNodeBase FindRootParent()
+        {
+            return ((ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource).First(x => x.IsSelected);
+        }
+
+        private static TreeNodeBase CreateTreeNodeInstance<T>(string name, TreeNodeBase parent) where T : TreeNodeBase
+        {
+            return (TreeNodeBase)Activator.CreateInstance(typeof(T), name, parent)!;
         }
 
         private void AddNewFolderViaContextMenu(object sender, RoutedEventArgs e)
