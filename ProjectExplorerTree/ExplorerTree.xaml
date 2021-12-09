@@ -11,7 +11,7 @@
     <UserControl.Resources>
         <!-- the context menu for all tree view items -->
         <ContextMenu x:Key="TreeViewItemContextMenu">
-            <MenuItem Header="Add" >
+            <MenuItem Header="Add">
                 <MenuItem.Icon>
                     <iconPacks:PackIconMaterial Kind="Plus" Foreground="Blue"/>
                 </MenuItem.Icon>
@@ -20,14 +20,9 @@
                         <iconPacks:PackIconMaterial Kind="FolderPlus" Foreground="SandyBrown" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Test case" Click="AddNewTestCaseViaContextMenu">
+                <MenuItem Header="File" Click="AddNewFileViaContextMenu">
                     <MenuItem.Icon>
-                        <iconPacks:PackIconMaterial Kind="File" Foreground="Green"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Test sequence" Click="AddNewTestSequenceViaContextMenu" >
-                    <MenuItem.Icon>
-                        <iconPacks:PackIconMaterial Kind="File" Foreground="Orange"/>
+                        <iconPacks:PackIconMaterial Kind="FileCode" Foreground="SlateGray" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -37,32 +32,12 @@
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
-        <HierarchicalDataTemplate DataType="{x:Type local:TestProjectTreeNode}"
+        <HierarchicalDataTemplate DataType="{x:Type local:SimpleFileTreeNode}"
                                   ItemsSource="{Binding Children}">
             <StackPanel Orientation="Horizontal">
                 <iconPacks:PackIconMaterial
-                    Foreground="DodgerBlue"
-                    Kind="WindowOpen"
-                    Margin="3,0,5,0" />
-                <TextBlock Text="{Binding Name}" />
-            </StackPanel>
-        </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type local:TestCaseFileTreeNode}"
-                                  ItemsSource="{Binding Children}">
-            <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconMaterial
-                    Foreground="Green"
-                    Kind="File"
-                    Margin="3,0,5,0" />
-                <TextBlock Text="{Binding Name}" />
-            </StackPanel>
-        </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type local:TestSequenceTreeNode}"
-                                  ItemsSource="{Binding Children}">
-            <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconMaterial
-                    Foreground="Orange"
-                    Kind="File"
+                    Foreground="SlateGray"
+                    Kind="FileCode"
                     Margin="3,0,5,0" />
                 <TextBlock Text="{Binding Name}" />
             </StackPanel>

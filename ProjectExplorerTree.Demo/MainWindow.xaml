@@ -5,12 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectExplorerTree.Demo"
         xmlns:projectExplorerTree="clr-namespace:ProjectExplorerTree;assembly=ProjectExplorerTree"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:customTreeTypes="clr-namespace:ProjectExplorerTree.Demo.CustomTreeTypes"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <local:ViewModel/>
     </Window.DataContext>
     <Grid>
+        <Grid.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type customTreeTypes:TestProjectTreeNode}"
+                                      ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial
+                        Foreground="DodgerBlue"
+                        Kind="WindowOpen"
+                        Margin="3,0,5,0" />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type customTreeTypes:TestCaseFileTreeNode}"
+                                      ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial
+                        Foreground="Green"
+                        Kind="File"
+                        Margin="3,0,5,0" />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type customTreeTypes:TestSequenceTreeNode}"
+                                      ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial
+                        Foreground="Orange"
+                        Kind="File"
+                        Margin="3,0,5,0" />
+                    <TextBlock Text="{Binding Name}" />
+                </StackPanel>
+            </HierarchicalDataTemplate>
+        </Grid.Resources>
         <projectExplorerTree:ExplorerTree Margin="10" 
                                           ItemsSource="{Binding Tree}"/>
     </Grid>

@@ -64,14 +64,9 @@ namespace ProjectExplorerTree
             AddNewItemViaContextMenu<FolderTreeNode>(sender, "New Folder");
         }
         
-        private void AddNewTestCaseViaContextMenu(object sender, RoutedEventArgs e)
+        private void AddNewFileViaContextMenu(object sender, RoutedEventArgs e)
         {
-            AddNewItemViaContextMenu<TestCaseFileTreeNode>(sender, "New Test case");
-        }
-
-        private void AddNewTestSequenceViaContextMenu(object sender, RoutedEventArgs e)
-        {
-            AddNewItemViaContextMenu<TestSequenceTreeNode>(sender, "New Test sequence");
+            AddNewItemViaContextMenu<SimpleFileTreeNode>(sender, "New File");
         }
         
         // Not used anymore. Recursive version of item deletion
@@ -120,5 +115,7 @@ namespace ProjectExplorerTree
 
             return (TreeViewItem)source;
         }
+
+
     }
 }

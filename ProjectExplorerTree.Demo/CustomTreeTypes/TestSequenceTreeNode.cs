@@ -1,4 +1,6 @@
-﻿namespace ProjectExplorerTree.TreeNodeTypes
+﻿using ProjectExplorerTree.TreeNodeTypes;
+
+namespace ProjectExplorerTree.Demo.CustomTreeTypes
 {
     public sealed class TestSequenceTreeNode : FileTreeNode
     {
