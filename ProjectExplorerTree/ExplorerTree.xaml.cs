@@ -11,7 +11,7 @@ using ProjectExplorerTree.TreeNodeTypes;
 namespace ProjectExplorerTree
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for ExplorerTree.xaml
     /// </summary>
     public partial class ExplorerTree
     {
@@ -74,7 +74,7 @@ namespace ProjectExplorerTree
             AddNewItemViaContextMenu<TestSequenceTreeNode>(sender, "New Test sequence");
         }
         
-
+        // Not used anymore. Recursive version of item deletion
         // private void DeleteItem(IEnumerable<TreeNodeBase?> tree, TreeNodeBase itemToDelete)
         // {
         //     foreach (var treeNode in tree)
@@ -101,6 +101,7 @@ namespace ProjectExplorerTree
             var parent = treeNodeToDelete.GetParent();
             parent?.DeleteItem(treeNodeToDelete);
 
+            // unused
             // var treeItemSource = (ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource;
             // DeleteItem(treeItemSource, treeNodeToDelete);
         }
@@ -119,7 +120,5 @@ namespace ProjectExplorerTree
 
             return (TreeViewItem)source;
         }
-
-
     }
 }
