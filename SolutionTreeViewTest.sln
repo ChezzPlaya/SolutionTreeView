@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectExplorerTree", "ProjectExplorerTree\ProjectExplorerTree.csproj", "{53E95C73-1572-48BC-A213-1ADA92DEF7E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectExplorerTree.Demo", "ProjectExplorerTree.Demo\ProjectExplorerTree.Demo.csproj", "{A7281BFB-09FB-4FC4-8E4A-CD1164815824}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53E95C73-1572-48BC-A213-1ADA92DEF7E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53E95C73-1572-48BC-A213-1ADA92DEF7E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53E95C73-1572-48BC-A213-1ADA92DEF7E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53E95C73-1572-48BC-A213-1ADA92DEF7E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7281BFB-09FB-4FC4-8E4A-CD1164815824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7281BFB-09FB-4FC4-8E4A-CD1164815824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7281BFB-09FB-4FC4-8E4A-CD1164815824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7281BFB-09FB-4FC4-8E4A-CD1164815824}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
