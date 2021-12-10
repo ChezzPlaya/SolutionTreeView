@@ -73,7 +73,7 @@ public sealed class DialogViewModel : ObservableObject, ICloseDialog
             {
                 binding.UpdateSource();
                 
-                if (_fileName == string.Empty)
+                if (_fileName == string.Empty || string.IsNullOrWhiteSpace(_fileName))
                 {
                     ErrorString = "File name can not be empty";
                     IsFileNameInvalid = true;
