@@ -19,6 +19,7 @@ The general idea of this project is to provide a starting point for everyone who
 ### Requirements:
 - NET 6.0
 - HandyControls lib (https://hosseini.ninja/handycontrol/quick_start/) `dotnet add package HandyControls --version 3.3.9`
+- MahApps Material Icons `dotnet add package MahApps.Metro.IconPacks.Material --version 4.11.0`
 
 ### XAML:
 
