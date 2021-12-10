@@ -16,10 +16,12 @@
         WindowStartupLocation="CenterScreen">
     <Grid HorizontalAlignment="Center">
         <hc:TextBox
+            IsError="{Binding IsFileNameInvalid}"
+            ErrorStr="{Binding ErrorString}"
             ShowClearButton="True"
             hc:TitleElement.TitlePlacement="Top"
             dialog:FocusExtension.IsFocused="True"
-            Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+            Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
             hc:InfoElement.Title="Please provide a valid file name"
             Width="250"
             VerticalAlignment="Center"

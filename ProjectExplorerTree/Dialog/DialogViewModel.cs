@@ -12,10 +12,32 @@ using ProjectExplorerTree.TreeNodeTypes;
 
 namespace ProjectExplorerTree.Dialog;
 
-public sealed class DialogViewModel : INotifyPropertyChanged, ICloseDialog, IDataErrorInfo
+public sealed class DialogViewModel : ObservableObject, ICloseDialog
 {
     private readonly IEnumerable<TreeNodeBase> _treeItemSource;
     private string _fileName = string.Empty;
+    private bool _isFileNameInvalid;
+    private string _errorString = string.Empty;
+
+    public string ErrorString
+    {
+        get => _errorString;
+        set
+        {
+            _errorString = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsFileNameInvalid
+    {
+        get => _isFileNameInvalid;
+        set
+        {
+            _isFileNameInvalid = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string FileName
     {
@@ -48,8 +70,27 @@ public sealed class DialogViewModel : INotifyPropertyChanged, ICloseDialog, IDat
         {
             DependencyProperty prop = TextBox.TextProperty;
             BindingExpression? binding = BindingOperations.GetBindingExpression(tBox, prop);
-            if (binding != null) 
+            if (binding != null)
+            {
                 binding.UpdateSource();
+                
+                if (_fileName == string.Empty)
+                {
+                    ErrorString = "File name can not be empty";
+                    IsFileNameInvalid = true;
+                } 
+                else if (SearchDuplicateTreeNodeItem(_treeItemSource, _fileName))
+                {
+                    ErrorString = $"A file name with \"{_fileName}\" already exists";
+                    IsFileNameInvalid = true;
+                }
+                else
+                {
+                    IsFileNameInvalid = false;
+                    ErrorString = string.Empty;
+                    CloseDialog();
+                }
+            }
         }
     }
 
@@ -82,38 +123,5 @@ public sealed class DialogViewModel : INotifyPropertyChanged, ICloseDialog, IDat
         return foundDuplicate;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
     public Action? Close { get; set; }
-    public string Error => string.Empty;
-
-    public string this[string columnName]
-    {
-        get
-        {
-            
-            string result = string.Empty;
-
-            if (_fileName == string.Empty)
-            {
-                result = "";
-            } 
-            else if (SearchDuplicateTreeNodeItem(_treeItemSource, _fileName))
-            {
-                result = $"A file name with \"{_fileName}\" already exists";
-            }
-            else
-            {
-                CloseDialog();
-            }
-
-            return result;
-            
-        }
-    }
 }
