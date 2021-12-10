@@ -2,7 +2,7 @@
 
 namespace ProjectExplorerTree.Dialog;
 
-public interface ICloseWindow
+public interface ICloseDialog
 {
     Action Close { get; set; }
 }

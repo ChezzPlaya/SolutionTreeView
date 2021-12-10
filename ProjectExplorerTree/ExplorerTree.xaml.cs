@@ -61,10 +61,12 @@ namespace ProjectExplorerTree
                 }
             }
         }
-
+        
         private string RetrieveFileNameFromDialog()
         {
-            ViewModel dialogVm = new ViewModel();
+            var treeItemSource = (ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource;
+            
+            DialogViewModel dialogVm = new DialogViewModel(treeItemSource);
             var dialogContent = new ContextMenuAddItemNameDialog
             {
                 DataContext = dialogVm

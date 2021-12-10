@@ -15,20 +15,22 @@
         BorderThickness="1"
         WindowStartupLocation="CenterScreen">
     <Grid HorizontalAlignment="Center">
-        <TextBox Style="{StaticResource TextBoxExtend}"
-                 dialog:FocusExtension.IsFocused="True"
-                 Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
-                 hc:InfoElement.Title="Please provide a valid file name"
-                 Width="250"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center">
-            <TextBox.InputBindings>
+        <hc:TextBox
+            ShowClearButton="True"
+            hc:TitleElement.TitlePlacement="Top"
+            dialog:FocusExtension.IsFocused="True"
+            Text="{Binding FileName, Mode=TwoWay, UpdateSourceTrigger=Explicit, ValidatesOnDataErrors=True}"
+            hc:InfoElement.Title="Please provide a valid file name"
+            Width="250"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
+            <hc:TextBox.InputBindings>
                 <KeyBinding Gesture="Enter"
                             Command="{Binding UpdateTextBoxBindingOnEnterCommand}"
                             CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type TextBox}}}" />
                 <KeyBinding Gesture="Escape"
-                            Command="{Binding EscapeOnTextBoxCommand}"/>
-            </TextBox.InputBindings>
-        </TextBox>
+                            Command="{Binding EscapeOnTextBoxCommand}" />
+            </hc:TextBox.InputBindings>
+        </hc:TextBox>
     </Grid>
 </Window>

@@ -12,7 +12,7 @@ public partial class ContextMenuAddItemNameDialog
 
     private void DialogWindowLoaded(object sender, RoutedEventArgs e)
     {
-        if (DataContext is ICloseWindow vm)
+        if (DataContext is ICloseDialog vm)
         {
             vm.Close += Close;
         }
