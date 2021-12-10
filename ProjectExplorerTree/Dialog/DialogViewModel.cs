@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,7 +12,7 @@ namespace ProjectExplorerTree.Dialog;
 
 public sealed class DialogViewModel : ObservableObject, ICloseDialog
 {
-    private readonly IEnumerable<TreeNodeBase> _treeItemSource;
+    private readonly IEnumerable<TreeNodeBase>? _treeItemSource;
     private string _fileName = string.Empty;
     private bool _isFileNameInvalid;
     private string _errorString = string.Empty;
@@ -52,7 +50,7 @@ public sealed class DialogViewModel : ObservableObject, ICloseDialog
     public ICommand UpdateTextBoxBindingOnEnterCommand { get; }
     public ICommand EscapeOnTextBoxCommand { get; }
 
-    public DialogViewModel(IEnumerable<TreeNodeBase> treeItemSource)
+    public DialogViewModel(IEnumerable<TreeNodeBase>? treeItemSource)
     {
         _treeItemSource = treeItemSource;
         UpdateTextBoxBindingOnEnterCommand = new RelayCommand(ExecuteUpdateTextBoxBindingOnEnterCommand);
@@ -61,6 +59,7 @@ public sealed class DialogViewModel : ObservableObject, ICloseDialog
 
     private void EscapeOnTextBox(object obj)
     {
+        if (_isFileNameInvalid) _fileName = string.Empty;
         CloseDialog();
     }
 
@@ -79,7 +78,7 @@ public sealed class DialogViewModel : ObservableObject, ICloseDialog
                     ErrorString = "File name can not be empty";
                     IsFileNameInvalid = true;
                 } 
-                else if (SearchDuplicateTreeNodeItem(_treeItemSource, _fileName))
+                else if (_treeItemSource != null && SearchDuplicateTreeNodeItem(_treeItemSource, _fileName))
                 {
                     ErrorString = $"A file name with \"{_fileName}\" already exists";
                     IsFileNameInvalid = true;
@@ -105,9 +104,16 @@ public sealed class DialogViewModel : ObservableObject, ICloseDialog
 
         foreach (TreeNodeBase? treeNode in tree)
         {
+            // Check the treenode for duplicate
+            if (CheckForName(nameToSearch, treeNode) == true)
+            {
+                foundDuplicate = true;
+                break;
+            }
+            
+            // Verify treenode children for duplicate
             foundDuplicate = treeNode != null && treeNode.Children.Any(
-                treeNodeBase => treeNodeBase?.Name.Equals(nameToSearch,
-                    StringComparison.OrdinalIgnoreCase) == true);
+                treeNodeBase => CheckForName(nameToSearch, treeNodeBase) == true);
 
             if (foundDuplicate)
             {
@@ -121,6 +127,12 @@ public sealed class DialogViewModel : ObservableObject, ICloseDialog
         }
 
         return foundDuplicate;
+    }
+
+    private static bool? CheckForName(string nameToSearch, TreeNodeBase? treeNodeBase)
+    {
+        return treeNodeBase?.Name.Equals(nameToSearch,
+            StringComparison.OrdinalIgnoreCase);
     }
 
     public Action? Close { get; set; }

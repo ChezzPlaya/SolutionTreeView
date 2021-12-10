@@ -33,9 +33,6 @@ namespace ProjectExplorerTree
 
         private void AddNewItemViaContextMenu<T>(object sender) where T : TreeNodeBase
         {
-            string name = RetrieveFileNameFromDialog();
-            if (name == string.Empty) return;
-            
             var treeNode = (TreeNodeBase)((MenuItem)sender).DataContext;
             var parent = treeNode.GetParent();
             
@@ -43,11 +40,16 @@ namespace ProjectExplorerTree
             if (parent is null)
             {
                 parent = FindRootParent();
+                
+                if (RetrieveFileNameFromDialog(parent, out string name)) return;
+                
                 var newItem = CreateTreeNodeInstance<T>(name, parent);
                 parent.AddNewItem(newItem);
             }
             else
             {
+                if (RetrieveFileNameFromDialog(parent, out string name)) return;
+                
                 // Check for the file tree node type --> Add item to the parent
                 if (treeNode.GetType().IsSubclassOf(typeof(FileTreeNode)))
                 {
@@ -61,12 +63,19 @@ namespace ProjectExplorerTree
                 }
             }
         }
-        
-        private string RetrieveFileNameFromDialog()
+
+        private bool RetrieveFileNameFromDialog(TreeNodeBase? parent, out string name)
         {
-            var treeItemSource = (ObservableCollection<TreeNodeBase>)TreeViewMain.ItemsSource;
+            name = LaunchDialog(parent);
+            if (name == string.Empty) return true;
+            return false;
+        }
+
+        private string LaunchDialog(TreeNodeBase? treeNodeBase)
+        {
+            var treeItemSource = treeNodeBase?.Children;
             
-            DialogViewModel dialogVm = new DialogViewModel(treeItemSource);
+            DialogViewModel dialogVm = new DialogViewModel(treeItemSource!);
             var dialogContent = new ContextMenuAddItemNameDialog
             {
                 DataContext = dialogVm

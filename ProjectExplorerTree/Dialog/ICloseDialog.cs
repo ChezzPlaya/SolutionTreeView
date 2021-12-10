@@ -4,5 +4,5 @@ namespace ProjectExplorerTree.Dialog;
 
 public interface ICloseDialog
 {
-    Action Close { get; set; }
+    Action? Close { get; set; }
 }
