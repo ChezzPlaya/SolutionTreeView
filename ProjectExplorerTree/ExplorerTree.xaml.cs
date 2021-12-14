@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ProjectExplorerTree.Dialog;
 using ProjectExplorerTree.TreeNodeTypes;
+using DragDrop = System.Windows.DragDrop;
 
 namespace ProjectExplorerTree
 {
@@ -20,10 +21,13 @@ namespace ProjectExplorerTree
         {
             InitializeComponent();
         }
+        
+        private TreeNodeBase? dragItemSource;
 
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable<TreeNodeBase>),
                 typeof(ExplorerTree), new PropertyMetadata(null));
+
 
         public IEnumerable<TreeNodeBase> ItemsSource
         {
@@ -130,7 +134,76 @@ namespace ProjectExplorerTree
 
             return (TreeViewItem)source;
         }
+        
+        private void TreeViewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                
+                dragItemSource = (TreeNodeBase)TreeViewMain.SelectedItem;
 
+                DragDropEffects finalDropEffect = DragDrop.DoDragDrop(TreeViewMain, TreeViewMain.SelectedValue,
+                    DragDropEffects.Copy);
+                
+                // Occur on drop accept
+                if ((finalDropEffect == DragDropEffects.Copy))
+                {
+                    // // A Move drop was accepted
+                    // if (!draggedItem.Header.ToString().Equals(_target.Header.ToString()))
+                    // {
+                    //     CopyItem(draggedItem, _target);
+                    //     _target = null;
+                    //     draggedItem = null;
+                    // }       
+                }
 
+            }
+        }
+        private void TreeViewDragOver(object sender, DragEventArgs e)
+        {
+            TreeViewItem? item = GetNearestContainer(e.OriginalSource as UIElement);
+
+            if (dragItemSource != null && item?.DataContext is TreeNodeBase dropItemTarget)
+            {
+                e.Effects = CheckDropTarget(dragItemSource, dropItemTarget) ? DragDropEffects.Copy : DragDropEffects.None;
+            }
+
+            e.Handled = true;
+        }
+        
+        private void TreeViewDrop(object sender, DragEventArgs e)
+        {
+            
+        }
+        
+        private bool CheckDropTarget(TreeNodeBase source, TreeNodeBase target)
+        {
+            if (source.GetType().IsSubclassOf(typeof(FileTreeNode)))
+            {
+                return (!target.GetType().IsSubclassOf(typeof(FileTreeNode)) || !source.GetType().IsSubclassOf(typeof(FileTreeNode)));
+            } 
+            else if (source is FolderTreeNode)
+            {
+                return (!target.GetType().IsSubclassOf(typeof(FileTreeNode)) || source is not FolderTreeNode);
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
+
+        private TreeViewItem? GetNearestContainer(UIElement? element)
+        {
+            // Walk up the element tree to the nearest tree view item.
+            TreeViewItem? container = element as TreeViewItem;
+            while ((container == null) && (element != null))
+            {
+                element = VisualTreeHelper.GetParent(element) as UIElement;
+                container = element as TreeViewItem;
+            }
+            return container;
+        }
+        
     }
 }
