@@ -13,7 +13,25 @@ The general idea of this project is to provide a starting point for everyone who
 
 ## See it in action:
 
-<img src="https://user-images.githubusercontent.com/76159073/145566368-db031852-5a40-4041-99bf-cdd61fc7a281.gif" width="90%"></img> 
+### Add file or folder
+<img src="https://user-images.githubusercontent.com/76159073/146186137-80d8f99b-3e32-4033-b07f-ae4aa6240500.gif" width="90%">
+</img> 
+
+### Reorder file or folder
+<img src="https://user-images.githubusercontent.com/76159073/146186253-43bebb66-e423-4804-a7c0-7dd957539cb5.gif" width="90%">
+</img> 
+
+### Delete file or folder
+<img src="https://user-images.githubusercontent.com/76159073/146186258-a3e5ee1b-18bb-43e2-a85e-1a920e462157.gif" width="90%">
+</img> 
+
+### Error handling on drag and drop
+<img src="https://user-images.githubusercontent.com/76159073/146186259-a153f0a3-e9f9-4f68-9a2a-fb0504e06e71.gif" width="90%">
+</img> 
+
+### Error handling on item creation
+<img src="https://user-images.githubusercontent.com/76159073/146186260-432d9264-647a-4296-a79d-223d05f2dad0.gif" width="90%">
+</img> 
 
 ## Usage:
 ### Requirements:
