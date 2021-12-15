@@ -170,34 +170,60 @@ namespace ProjectExplorerTree
             }
             
         }
+
+        private void ShowActionCannotCompleteError()
+        {
+            MessageBox.Show(new MessageBoxInfo
+            {
+                Message = $"Item {_sourceItem?.Name} already exists at new location",
+                Caption = "Cannot complete Action",
+                Button = MessageBoxButton.OK,
+                IconBrushKey = ResourceToken.AccentBrush,
+                IconKey = ResourceToken.ErrorGeometry
+            });
+        }
+        private bool IsDropValid()
+        {
+
+            if (_targetItem is FolderTreeNode)
+            {
+                // Verify in this case the children of the folder due to possible duplicates
+                bool anyDuplicates = _targetItem.Children.Any(targetItemChild
+                    => targetItemChild?.Name.Equals(_sourceItem?.Name, StringComparison.OrdinalIgnoreCase) == true);
+
+                if (anyDuplicates)
+                {
+                    ShowActionCannotCompleteError();
+                    return false;
+                }
+
+            }
+            
+            if (_sourceItem != null && _sourceItem.Name.Equals(_targetItem?.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                ShowActionCannotCompleteError();
+                return false;
+            }
+
+            return true;
+        }
         
         private void TreeViewDrop(object sender, DragEventArgs e)
         {
-            if (_sourceItem != null && _sourceItem.Name.Equals(_targetItem?.Name, StringComparison.OrdinalIgnoreCase))
+
+            if (IsDropValid())
             {
-                MessageBox.Show(new MessageBoxInfo
-                {
-                    Message = $"Item {_targetItem.Name} already exists at new location",
-                    Caption = "Cannot complete Action",
-                    Button = MessageBoxButton.OK,
-                    IconBrushKey = ResourceToken.AccentBrush,
-                    IconKey = ResourceToken.ErrorGeometry
-                });
-                
-                e.Handled = true;
-                return;
+                // Make a shallow copy of the sourceitem
+                var newSourceItem = _sourceItem?.ShallowCopy();
+                // Update the parent
+                newSourceItem?.SetParent(_targetItem);
+                _targetItem?.AddNewItem(newSourceItem);
+            
+                // Remove the dragged source from the treeview
+                var sourceParent = _sourceItem?.GetParent();
+                sourceParent?.DeleteItem(_sourceItem);
             }
             
-            // Make a shallow copy of the sourceitem
-            var newSourceItem = _sourceItem?.ShallowCopy();
-            // Update the parent
-            newSourceItem?.SetParent(_targetItem);
-            _targetItem?.AddNewItem(newSourceItem);
-            
-            // Remove the dragged source from the treeview
-            var sourceParent = _sourceItem?.GetParent();
-            sourceParent?.DeleteItem(_sourceItem);
-
             e.Handled = true;
 
         }
