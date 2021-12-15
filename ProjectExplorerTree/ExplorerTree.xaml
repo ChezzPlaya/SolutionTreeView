@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ProjectExplorerTree.TreeNodeTypes"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:projectExplorerTree="clr-namespace:ProjectExplorerTree"
              mc:Ignorable="d"
              x:Name="Root"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -80,6 +81,12 @@
                     <EventSetter Event="MouseMove" Handler="TreeViewMouseMove"/>
                     <EventSetter Event="DragOver" Handler="TreeViewDragOver"/>
                     <EventSetter Event="Drop" Handler="TreeViewDrop"/>
+                    <Style.Triggers>
+                        <Trigger Property="projectExplorerTree:TreeViewDropHighlighter.IsPossibleDropTarget" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                            <Setter Property="BorderThickness" Value="2" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </TreeView>

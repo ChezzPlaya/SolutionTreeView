@@ -23,14 +23,14 @@ namespace ProjectExplorerTree
         {
             InitializeComponent();
         }
-        
+
         private TreeNodeBase? _sourceItem;
         private TreeNodeBase? _targetItem;
 
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable<TreeNodeBase>),
                 typeof(ExplorerTree), new PropertyMetadata(null));
-        
+
         public IEnumerable<TreeNodeBase> ItemsSource
         {
             get => (IEnumerable<TreeNodeBase>)GetValue(ItemsSourceProperty);
@@ -41,21 +41,21 @@ namespace ProjectExplorerTree
         {
             var treeNode = (TreeNodeBase)((MenuItem)sender).DataContext;
             var parent = treeNode.GetParent();
-            
+
             // parent is null -> then we've reached the treenode root
             if (parent is null)
             {
                 parent = FindRootParent();
-                
+
                 if (RetrieveFileNameFromDialog(parent, out string name)) return;
-                
+
                 var newItem = CreateTreeNodeInstance<T>(name, parent);
                 parent.AddNewItem(newItem);
             }
             else
             {
                 if (RetrieveFileNameFromDialog(parent, out string name)) return;
-                
+
                 // Check for the file tree node type --> Add item to the parent
                 if (treeNode.GetType().IsSubclassOf(typeof(FileTreeNode)))
                 {
@@ -80,7 +80,7 @@ namespace ProjectExplorerTree
         private string LaunchDialog(TreeNodeBase? treeNodeBase)
         {
             var treeItemSource = treeNodeBase?.Children;
-            
+
             DialogViewModel dialogVm = new DialogViewModel(treeItemSource!);
             var dialogContent = new ContextMenuAddItemNameDialog
             {
@@ -107,19 +107,19 @@ namespace ProjectExplorerTree
         {
             AddNewItemViaContextMenu<FolderTreeNode>(sender);
         }
-        
+
         private void AddNewFileViaContextMenu(object sender, RoutedEventArgs e)
         {
             AddNewItemViaContextMenu<SimpleFileTreeNode>(sender);
         }
-        
+
         private void DeleteCurrentItemViaContextMenu(object sender, RoutedEventArgs e)
         {
 
             var treeNodeToDelete = (TreeNodeBase)((MenuItem)sender).DataContext;
 
             string type = treeNodeToDelete is FolderTreeNode ? "folder" : "file";
-            
+
             MessageBoxResult result = MessageBox.Show(new MessageBoxInfo
             {
                 Message = $"Delete '{treeNodeToDelete.Name}' {type}",
@@ -134,7 +134,7 @@ namespace ProjectExplorerTree
                 var parent = treeNodeToDelete.GetParent();
                 parent?.DeleteItem(treeNodeToDelete);
             }
-            
+
         }
 
         private void TreeViewItemPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -143,7 +143,7 @@ namespace ProjectExplorerTree
             treeViewItem?.Focus();
             e.Handled = true;
         }
-        
+
         static TreeViewItem? VisualUpwardSearch(DependencyObject? source)
         {
             while (source != null && !(source is TreeViewItem))
@@ -151,7 +151,7 @@ namespace ProjectExplorerTree
 
             return (TreeViewItem?)source;
         }
-        
+
         private void TreeViewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -160,6 +160,7 @@ namespace ProjectExplorerTree
                 DragDrop.DoDragDrop(TreeViewMain, TreeViewMain.SelectedValue, DragDropEffects.Copy);
             }
         }
+
         private void TreeViewDragOver(object sender, DragEventArgs e)
         {
             TreeViewItem? item = GetNearestContainer(e.OriginalSource as UIElement);
@@ -168,7 +169,7 @@ namespace ProjectExplorerTree
             {
                 e.Effects = CheckDropTarget(_sourceItem, dropItemTarget) ? DragDropEffects.Copy : DragDropEffects.None;
             }
-            
+
         }
 
         private void ShowActionCannotCompleteError()
@@ -198,7 +199,7 @@ namespace ProjectExplorerTree
                 }
 
             }
-            
+
             if (_sourceItem != null && _sourceItem.Name.Equals(_targetItem?.Name, StringComparison.OrdinalIgnoreCase))
             {
                 ShowActionCannotCompleteError();
@@ -207,7 +208,7 @@ namespace ProjectExplorerTree
 
             return true;
         }
-        
+
         private void TreeViewDrop(object sender, DragEventArgs e)
         {
 
@@ -218,16 +219,16 @@ namespace ProjectExplorerTree
                 // Update the parent
                 newSourceItem?.SetParent(_targetItem);
                 _targetItem?.AddNewItem(newSourceItem);
-            
+
                 // Remove the dragged source from the treeview
                 var sourceParent = _sourceItem?.GetParent();
                 sourceParent?.DeleteItem(_sourceItem);
             }
-            
+
             e.Handled = true;
 
         }
-        
+
         private bool CheckDropTarget(TreeNodeBase source, TreeNodeBase target)
         {
             _sourceItem = source;
@@ -236,7 +237,7 @@ namespace ProjectExplorerTree
             if (source.GetType().IsSubclassOf(typeof(FileTreeNode)))
             {
                 return (!target.GetType().IsSubclassOf(typeof(FileTreeNode)) || !source.GetType().IsSubclassOf(typeof(FileTreeNode)));
-            } 
+            }
             else if (source is FolderTreeNode)
             {
                 return (!target.GetType().IsSubclassOf(typeof(FileTreeNode)) || source is not FolderTreeNode);
@@ -245,9 +246,9 @@ namespace ProjectExplorerTree
             {
                 return false;
             }
-            
+
         }
-        
+
         private TreeViewItem? GetNearestContainer(UIElement? element)
         {
             // Walk up the element tree to the nearest tree view item.
@@ -257,8 +258,9 @@ namespace ProjectExplorerTree
                 element = VisualTreeHelper.GetParent(element) as UIElement;
                 container = element as TreeViewItem;
             }
+
             return container;
         }
-        
+
     }
 }
