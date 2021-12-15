@@ -117,10 +117,25 @@ namespace ProjectExplorerTree
         
         private void DeleteCurrentItemViaContextMenu(object sender, RoutedEventArgs e)
         {
+
             var treeNodeToDelete = (TreeNodeBase)((MenuItem)sender).DataContext;
 
-            var parent = treeNodeToDelete.GetParent();
-            parent?.DeleteItem(treeNodeToDelete);
+            string type = treeNodeToDelete is FolderTreeNode ? "folder" : "file";
+            
+            MessageBoxResult result = MessageBox.Show(new MessageBoxInfo
+            {
+                Message = $"Delete '{treeNodeToDelete.Name}' {type}",
+                Caption = "Delete",
+                Button = MessageBoxButton.OKCancel,
+                IconBrushKey = ResourceToken.InfoBrush,
+                IconKey = ResourceToken.AskGeometry
+            });
+
+            if (result == MessageBoxResult.OK)
+            {
+                var parent = treeNodeToDelete.GetParent();
+                parent?.DeleteItem(treeNodeToDelete);
+            }
             
         }
 
