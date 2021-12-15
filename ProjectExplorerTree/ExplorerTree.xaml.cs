@@ -24,10 +24,8 @@ namespace ProjectExplorerTree
             InitializeComponent();
         }
         
-        private TreeNodeBase _sourceItem;
-        private TreeNodeBase _targetItem;
-        
-        private TreeNodeBase? dragItemSource;
+        private TreeNodeBase? _sourceItem;
+        private TreeNodeBase? _targetItem;
 
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable<TreeNodeBase>),
@@ -141,24 +139,24 @@ namespace ProjectExplorerTree
 
         private void TreeViewItemPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            TreeViewItem treeViewItem = VisualUpwardSearch((DependencyObject)e.OriginalSource);
-            treeViewItem.Focus();
+            TreeViewItem? treeViewItem = VisualUpwardSearch((DependencyObject)e.OriginalSource);
+            treeViewItem?.Focus();
             e.Handled = true;
         }
         
-        static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        static TreeViewItem? VisualUpwardSearch(DependencyObject? source)
         {
             while (source != null && !(source is TreeViewItem))
                 source = VisualTreeHelper.GetParent(source);
 
-            return (TreeViewItem)source;
+            return (TreeViewItem?)source;
         }
         
         private void TreeViewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                dragItemSource = (TreeNodeBase)TreeViewMain.SelectedItem;
+                _sourceItem = (TreeNodeBase)TreeViewMain.SelectedItem;
                 DragDrop.DoDragDrop(TreeViewMain, TreeViewMain.SelectedValue, DragDropEffects.Copy);
             }
         }
@@ -166,16 +164,16 @@ namespace ProjectExplorerTree
         {
             TreeViewItem? item = GetNearestContainer(e.OriginalSource as UIElement);
 
-            if (dragItemSource != null && item?.DataContext is TreeNodeBase dropItemTarget)
+            if (_sourceItem != null && item?.DataContext is TreeNodeBase dropItemTarget)
             {
-                e.Effects = CheckDropTarget(dragItemSource, dropItemTarget) ? DragDropEffects.Copy : DragDropEffects.None;
+                e.Effects = CheckDropTarget(_sourceItem, dropItemTarget) ? DragDropEffects.Copy : DragDropEffects.None;
             }
             
         }
         
         private void TreeViewDrop(object sender, DragEventArgs e)
         {
-            if (_sourceItem.Name.Equals(_targetItem.Name, StringComparison.OrdinalIgnoreCase))
+            if (_sourceItem != null && _sourceItem.Name.Equals(_targetItem?.Name, StringComparison.OrdinalIgnoreCase))
             {
                 MessageBox.Show(new MessageBoxInfo
                 {
@@ -191,13 +189,13 @@ namespace ProjectExplorerTree
             }
             
             // Make a shallow copy of the sourceitem
-            var newSourceItem = _sourceItem.ShallowCopy();
+            var newSourceItem = _sourceItem?.ShallowCopy();
             // Update the parent
-            newSourceItem.SetParent(_targetItem);
-            _targetItem.AddNewItem(newSourceItem);
+            newSourceItem?.SetParent(_targetItem);
+            _targetItem?.AddNewItem(newSourceItem);
             
             // Remove the dragged source from the treeview
-            var sourceParent = _sourceItem.GetParent();
+            var sourceParent = _sourceItem?.GetParent();
             sourceParent?.DeleteItem(_sourceItem);
 
             e.Handled = true;
