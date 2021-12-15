@@ -6,9 +6,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using HandyControl.Data;
 using ProjectExplorerTree.Dialog;
 using ProjectExplorerTree.TreeNodeTypes;
 using DragDrop = System.Windows.DragDrop;
+using MessageBox = HandyControl.Controls.MessageBox;
 
 namespace ProjectExplorerTree
 {
@@ -22,13 +24,15 @@ namespace ProjectExplorerTree
             InitializeComponent();
         }
         
+        private TreeNodeBase _sourceItem;
+        private TreeNodeBase _targetItem;
+        
         private TreeNodeBase? dragItemSource;
 
         public static readonly DependencyProperty ItemsSourceProperty =
             DependencyProperty.Register("ItemsSource", typeof(IEnumerable<TreeNodeBase>),
                 typeof(ExplorerTree), new PropertyMetadata(null));
-
-
+        
         public IEnumerable<TreeNodeBase> ItemsSource
         {
             get => (IEnumerable<TreeNodeBase>)GetValue(ItemsSourceProperty);
@@ -139,24 +143,8 @@ namespace ProjectExplorerTree
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                
                 dragItemSource = (TreeNodeBase)TreeViewMain.SelectedItem;
-
-                DragDropEffects finalDropEffect = DragDrop.DoDragDrop(TreeViewMain, TreeViewMain.SelectedValue,
-                    DragDropEffects.Copy);
-                
-                // Occur on drop accept
-                if ((finalDropEffect == DragDropEffects.Copy))
-                {
-                    // // A Move drop was accepted
-                    // if (!draggedItem.Header.ToString().Equals(_target.Header.ToString()))
-                    // {
-                    //     CopyItem(draggedItem, _target);
-                    //     _target = null;
-                    //     draggedItem = null;
-                    // }       
-                }
-
+                DragDrop.DoDragDrop(TreeViewMain, TreeViewMain.SelectedValue, DragDropEffects.Copy);
             }
         }
         private void TreeViewDragOver(object sender, DragEventArgs e)
@@ -167,17 +155,45 @@ namespace ProjectExplorerTree
             {
                 e.Effects = CheckDropTarget(dragItemSource, dropItemTarget) ? DragDropEffects.Copy : DragDropEffects.None;
             }
-
-            e.Handled = true;
+            
         }
         
         private void TreeViewDrop(object sender, DragEventArgs e)
         {
+            if (_sourceItem.Name.Equals(_targetItem.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show(new MessageBoxInfo
+                {
+                    Message = $"Item {_targetItem.Name} already exists at new location",
+                    Caption = "Cannot complete Action",
+                    Button = MessageBoxButton.OK,
+                    IconBrushKey = ResourceToken.AccentBrush,
+                    IconKey = ResourceToken.ErrorGeometry
+                });
+                
+                e.Handled = true;
+                return;
+            }
             
+            // Make a shallow copy of the sourceitem
+            var newSourceItem = _sourceItem.ShallowCopy();
+            // Update the parent
+            newSourceItem.SetParent(_targetItem);
+            _targetItem.AddNewItem(newSourceItem);
+            
+            // Remove the dragged source from the treeview
+            var sourceParent = _sourceItem.GetParent();
+            sourceParent?.DeleteItem(_sourceItem);
+
+            e.Handled = true;
+
         }
         
         private bool CheckDropTarget(TreeNodeBase source, TreeNodeBase target)
         {
+            _sourceItem = source;
+            _targetItem = target;
+
             if (source.GetType().IsSubclassOf(typeof(FileTreeNode)))
             {
                 return (!target.GetType().IsSubclassOf(typeof(FileTreeNode)) || !source.GetType().IsSubclassOf(typeof(FileTreeNode)));
@@ -192,7 +208,7 @@ namespace ProjectExplorerTree
             }
             
         }
-
+        
         private TreeViewItem? GetNearestContainer(UIElement? element)
         {
             // Walk up the element tree to the nearest tree view item.

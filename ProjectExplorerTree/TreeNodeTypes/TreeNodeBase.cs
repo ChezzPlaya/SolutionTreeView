@@ -70,13 +70,23 @@ namespace ProjectExplorerTree.TreeNodeTypes
 
         public TreeNodeBase? GetParent() => Parent;
         
-        protected TreeNodeBase? Parent { get; }
-        
+        protected TreeNodeBase? Parent { get; private set; }
+
         protected TreeNodeBase(TreeNodeBase? parent)
         {
             mChildren = new ObservableCollection<TreeNodeBase?>();
             IsExpanded = false;
             Parent = parent;
+        }
+
+        public void SetParent(TreeNodeBase? newParent)
+        {
+            Parent = newParent;
+        }
+
+        public TreeNodeBase ShallowCopy()
+        {
+            return (TreeNodeBase)this.MemberwiseClone();
         }
     }
 }
