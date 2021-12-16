@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 
 namespace ProjectExplorerTree.TreeNodeTypes
 {
+    [DataContract(IsReference = true)]
     public abstract class TreeNodeBase : ObservableObject
     {
-        private readonly ObservableCollection<TreeNodeBase?> mChildren;
+        private ObservableCollection<TreeNodeBase?> mChildren;
         
+        [DataMember]
         public string Name
         {
             get { return _name; }
@@ -21,7 +23,7 @@ namespace ProjectExplorerTree.TreeNodeTypes
         }
 
         private string _name = string.Empty;
-
+        
         public bool IsExpanded
         {
             get { return _isExpanded; }
@@ -62,14 +64,20 @@ namespace ProjectExplorerTree.TreeNodeTypes
             mChildren.Remove(treeNode);
         }
         
+        [DataMember]
         // Children are required to use this in a TreeView
-        public IEnumerable<TreeNodeBase?> Children
+        public ObservableCollection<TreeNodeBase?> Children
         {
             get { return mChildren; }
+            private set
+            {
+                mChildren = value;
+            }
         }
 
         public TreeNodeBase? GetParent() => Parent;
         
+        [DataMember]
         protected TreeNodeBase? Parent { get; private set; }
 
         protected TreeNodeBase(TreeNodeBase? parent)

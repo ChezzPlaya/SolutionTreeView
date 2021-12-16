@@ -46,7 +46,14 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
         </Grid.Resources>
-        <projectExplorerTree:ExplorerTree Margin="10" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Width="100" Content="Serialize" Command="{Binding SerializeCmd}"/>
+        <projectExplorerTree:ExplorerTree Margin="10" Grid.Row="1"
                                           ItemsSource="{Binding Tree}"/>
+        
+        
     </Grid>
 </Window>
